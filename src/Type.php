@@ -2,15 +2,34 @@
 
 namespace AshAllenDesign\TypeSafe;
 
-enum Type: string
+class Type
 {
-    case STRING = 'string';
+    public const STRING = 't_string';
 
-    case INT = 'integer';
+    public const INT = 't_integer';
 
-    case DOUBLE = 'double';
+    public const DOUBLE = 't_double';
 
-    case ARRAY = 'array';
+    public const ARRAY = 't_array';
 
-    case CLOSURE = 'closure';
+    public const ASSOC_ARRAY = 't_assoc_array';
+
+    public const CLOSURE = 't_closure';
+
+    public const OBJECT = 't_object';
+
+    public static function arrayOf(mixed $valueType): string
+    {
+        return static::ARRAY.'_'.$valueType;
+    }
+
+    public static function assocArrayOf(mixed $keyType, mixed $valueType): string
+    {
+        return static::ASSOC_ARRAY.'_'.$keyType.','.$valueType;
+    }
+
+    public static function object(string $className): string
+    {
+        return static::OBJECT.'_'.$className;
+    }
 }

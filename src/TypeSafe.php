@@ -2,6 +2,8 @@
 
 namespace AshAllenDesign\TypeSafe;
 
+use AshAllenDesign\TypeSafe\Exceptions\TypeSafeException;
+
 class TypeSafe
 {
     /**
@@ -10,105 +12,102 @@ class TypeSafe
      * @param mixed $prop
      * @param T $expectedType
      * @return T
-     * @throws \Exception
+     * @throws TypeSafeException
      */
-    public static function safe(mixed $prop, mixed $expectedType): mixed
+    public function safe(mixed $prop, mixed $expectedType): mixed
     {
-        if ($expectedType instanceof Type) {
-            return self::validateTypeEnum($prop, $expectedType);
-        }
+        // Our own type checks.
+        if (str_starts_with($expectedType, 't_')) {
+            // Closure checks.
+            if ($expectedType === Type::CLOSURE) {
+                if (!$prop instanceof \Closure) {
+                    self::wrongType();
+                }
 
-        $expectedTypeType = gettype($expectedType);
+                return $prop;
+            }
 
-        if ($expectedTypeType === 'string') {
-            return self::validateObject($prop, $expectedType);
-        }
+            if (str_starts_with($expectedType, Type::ASSOC_ARRAY)) {
+                if (array_is_list($prop)) {
+                    self::wrongType();
+                }
 
-        if ($expectedTypeType === 'array') {
-            // TODO Loop through all of the values.
-            if (gettype(array_values($prop)[0]) !== gettype($expectedType[0])) {
+                $assocTypes = $this->trimFromStart($expectedType, Type::ASSOC_ARRAY);
+
+                if ($assocTypes !== '') {
+                    [$keyType, $valueType] = explode(',', $this->trimFromStart($assocTypes, '_'));
+
+                    foreach ($prop as $key => $value) {
+                        $this->safe($key, $keyType);
+                        $this->safe($value, $valueType);
+                    }
+                }
+
+                return $prop;
+            }
+
+            if (str_starts_with($expectedType, Type::ARRAY)) {
+                if (! array_is_list($prop)) {
+                    self::wrongType();
+                }
+
+                $type = $this->trimFromStart($expectedType, Type::ARRAY);
+
+
+                if ($type !== '') {
+                    foreach ($prop as $value) {
+                        $this->safe($value, $this->trimFromStart($type, '_'));
+                    }
+                }
+
+                return $prop;
+            }
+
+            // Object checks.
+            if (str_starts_with($expectedType, 't_object_')) {
+                $type = $this->trimFromStart($expectedType, 't_object_');
+
+                if (!is_object($prop)) {
+                    self::wrongType();
+                }
+
+                if (!$prop instanceof $type) {
+                    self::wrongType();
+                }
+
+                return $prop;
+            }
+
+            // General types checks.
+            if (gettype($prop) !== $this->trimFromStart($expectedType, 't_')) {
                 self::wrongType();
             }
 
             return $prop;
         }
 
+        // Null checks.
+        if ($expectedType === null && $prop !== null) {
+            self::wrongType();
+        }
+
         return $prop;
     }
 
     /**
-     * @throws \Exception
+     * @throws TypeSafeException
      */
     private static function wrongType(): void
     {
-        throw new \Exception('Wrong type');
+        throw new TypeSafeException('Wrong type');
     }
 
-    /**
-     * @template T
-     *
-     * @param string $type
-     * @return T[]
-     */
-    public static function arrayOf(mixed $type): array
+    private function trimFromStart($string, $toRemove): string
     {
-        if ($type === Type::INT) {
-            return [1];
+        if (str_starts_with($string, $toRemove)) {
+            $string = substr($string, strlen($toRemove));
         }
 
-        if ($type === TYPE::STRING) {
-            return ['a'];
-        }
-
-        return [];
-    }
-
-    public static function assocArrayOf(mixed $key, mixed $value): array
-    {
-        $x = match($key) {
-            Type::INT => 1,
-            Type::STRING => 'a',
-        };
-
-        $y = match($value) {
-            Type::INT => 1,
-            Type::STRING => 'a',
-        };
-
-        if ($key === Type::INT) {
-            return [1];
-        }
-
-        if ($value === TYPE::STRING) {
-            return ['a'];
-        }
-
-        return [];
-    }
-
-    private static function validateTypeEnum(mixed $prop, mixed $expectedType): mixed
-    {
-        if ($expectedType === Type::CLOSURE) {
-            if (! $prop instanceof \Closure) {
-                self::wrongType();
-            }
-
-            return $prop;
-        }
-
-        if (gettype($prop) !== $expectedType->value) {
-            self::wrongType();
-        }
-
-        return $prop;
-    }
-
-    private static function validateObject(mixed $prop, mixed $expectedType)
-    {
-        if (class_exists($expectedType) && $prop::class !== $expectedType) {
-            self::wrongType();
-        }
-
-        return $prop;
+        return $string;
     }
 }
