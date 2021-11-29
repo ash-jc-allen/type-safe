@@ -135,7 +135,7 @@ class TypeSafe
      */
     private function runCheck(mixed $prop, string $expectedType): mixed
     {
-        if (!str_starts_with($expectedType, 't_')) {
+        if (strpos($expectedType , 't_') !== 0) {
             throw new InvalidTypeException($expectedType.' is not a valid type check.');
         }
 
