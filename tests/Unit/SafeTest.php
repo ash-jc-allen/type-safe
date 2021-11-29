@@ -6,6 +6,7 @@ use AshAllenDesign\TypeSafe\Exceptions\InvalidTypeException;
 use AshAllenDesign\TypeSafe\Exceptions\TypeSafeException;
 use AshAllenDesign\TypeSafe\Tests\TestCase;
 use AshAllenDesign\TypeSafe\Type;
+use AshAllenDesign\TypeSafe\TypeSafe;
 
 class SafeTest extends TestCase
 {
@@ -242,5 +243,16 @@ class SafeTest extends TestCase
         $this->expectExceptionMessage('INVALID is not a valid type check.');
 
         safe(1, 'INVALID');
+    }
+
+    /** @test */
+    public function checks_can_be_skipped(): void
+    {
+        TypeSafe::skipChecks(true);
+
+        self::assertEquals(
+            1,
+            safe(1, Type::STRING),
+        );
     }
 }

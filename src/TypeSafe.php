@@ -8,6 +8,8 @@ use Closure;
 
 class TypeSafe
 {
+    private static bool $skipChecks = false;
+
     /**
      * @template T
      *
@@ -19,6 +21,10 @@ class TypeSafe
      */
     public function safe(mixed $prop, string $expectedType): mixed
     {
+        if (static::$skipChecks) {
+            return $prop;
+        }
+
         if (!str_starts_with($expectedType, 't_')) {
             throw new InvalidTypeException($expectedType.' is not a valid type check.');
         }
@@ -34,6 +40,11 @@ class TypeSafe
             Type::OBJECT => $this->validateObject($prop, $specificType),
             default => $this->validateField($prop, $expectedType),
         };
+    }
+
+    public static function skipChecks(bool $skipChecks = true): void
+    {
+        static::$skipChecks = $skipChecks;
     }
 
     /**
