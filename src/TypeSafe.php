@@ -5,7 +5,6 @@ namespace AshAllenDesign\TypeSafe;
 use AshAllenDesign\TypeSafe\Exceptions\InvalidTypeException;
 use AshAllenDesign\TypeSafe\Exceptions\TypeSafeException;
 use Closure;
-use Exception;
 
 class TypeSafe
 {
@@ -51,9 +50,7 @@ class TypeSafe
     /**
      * @throws TypeSafeException
      */
-    // TODO Remove static.
-    // TODO Rename to fail().
-    private static function wrongType(string $message = ''): void
+    private function fail(string $message = ''): void
     {
         throw new TypeSafeException($message);
     }
@@ -75,7 +72,7 @@ class TypeSafe
     private function validateClosure(mixed $prop): Closure
     {
         if (!$prop instanceof \Closure) {
-            self::wrongType('The field is not a closure.');
+            $this->fail('The field is not a closure.');
         }
 
         return $prop;
@@ -91,11 +88,11 @@ class TypeSafe
     private function validateAssocArray(mixed $prop, string $expectedType): array
     {
         if (!is_array($prop)) {
-            self::wrongType('The field is not an array.');
+            $this->fail('The field is not an array.');
         }
 
         if (array_is_list($prop)) {
-            self::wrongType('The array is not associative.');
+            $this->fail('The array is not associative.');
         }
 
         $assocTypes = $this->trimFromStart($expectedType, Type::ASSOC_ARRAY);
@@ -125,7 +122,7 @@ class TypeSafe
     private function validateArray(mixed $prop, string $expectedType): array
     {
         if (!is_array($prop)) {
-            self::wrongType('The field is not an array.');
+            $this->fail('The field is not an array.');
         }
 
         $type = $this->trimFromStart($expectedType, Type::ARRAY);
@@ -152,14 +149,14 @@ class TypeSafe
         $type = $this->trimFromStart($expectedType, Type::OBJECT);
 
         if (!is_object($prop)) {
-            self::wrongType('The field is not an object.');
+            $this->fail('The field is not an object.');
         }
 
         if ($type !== '') {
             $type = $this->trimFromStart($type, '_');
 
             if (!$prop instanceof $type) {
-                self::wrongType('The field is not an instance of ' . $type);
+                $this->fail('The field is not an instance of ' . $type);
             }
         }
 
@@ -177,7 +174,7 @@ class TypeSafe
         $type = $this->trimFromStart($expectedType, 't_');
 
         if (gettype($prop) !== $type) {
-            self::wrongType('The field is not a '.$type);
+            $this->fail('The field is not a '.$type);
         }
 
         return $prop;
