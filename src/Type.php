@@ -22,16 +22,16 @@ class Type
 
     public static function arrayOf(mixed $valueType): string
     {
-        return static::ARRAY.'_'.$valueType;
+        return static::ARRAY.':'.$valueType;
     }
 
     public static function assocArrayOf(mixed $keyType, mixed $valueType): string
     {
-        return static::ASSOC_ARRAY.'_'.$keyType.','.$valueType;
+        return static::ASSOC_ARRAY.':'.$keyType.','.$valueType;
     }
 
     public static function object(string $className): string
     {
-        return static::OBJECT.'_'.$className;
+        return static::OBJECT.':'.$className;
     }
 }
