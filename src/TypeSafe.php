@@ -64,7 +64,7 @@ class TypeSafe
             $this->fail('The field is not an array.');
         }
 
-        if (array_is_list($prop)) {
+        if ($this->arrayIsList($prop)) {
             $this->fail('The array is not associative.');
         }
 
@@ -190,5 +190,10 @@ class TypeSafe
     private function fail(string $message = ''): void
     {
         throw new TypeSafeException($message);
+    }
+
+    private function arrayIsList(array $array): bool
+    {
+        return $array === [] || (array_keys($array) === range(0, count($array) - 1));
     }
 }
