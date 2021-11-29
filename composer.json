@@ -1,0 +1,39 @@
+{
+    "name": "ashallendesign/type-safe",
+    "description": "A package for ensuring variable types in PHP",
+    "type": "library",
+    "homepage": "https://github.com/ash-jc-allen/type-safe",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AshAllenDesign\\TypeSafe\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AshAllenDesign\\TypeSafe\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ash Allen",
+            "email": "mail@ashallendesign.co.uk"
+        }
+    ],
+    "keywords": [
+        "ashallendesign",
+        "type-safety",
+        "php"
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^9.0",
+        "symfony/var-dumper": "^5.3"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}
