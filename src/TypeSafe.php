@@ -13,11 +13,13 @@ class TypeSafe
     /**
      * @template T
      *
-     * @param T $prop
+     * @param T            $prop
      * @param Check|string $expectedType
-     * @return T
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return T
      */
     public function safe(mixed $prop, Check|string $expectedType): mixed
     {
@@ -39,8 +41,10 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return Closure
+     *
      * @throws TypeSafeException
+     *
+     * @return Closure
      */
     private function validateClosure(mixed $prop): Closure
     {
@@ -52,11 +56,13 @@ class TypeSafe
     }
 
     /**
-     * @param mixed $prop
+     * @param mixed       $prop
      * @param string|null $expectedType
-     * @return array
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return array
      */
     private function validateAssocArray(mixed $prop, ?string $expectedType): array
     {
@@ -84,11 +90,13 @@ class TypeSafe
     }
 
     /**
-     * @param mixed $prop
+     * @param mixed       $prop
      * @param string|null $expectedType
-     * @return array
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return array
      */
     private function validateArray(mixed $prop, ?string $expectedType): array
     {
@@ -108,10 +116,12 @@ class TypeSafe
     }
 
     /**
-     * @param mixed $prop
+     * @param mixed       $prop
      * @param string|null $expectedType
-     * @return object
+     *
      * @throws TypeSafeException
+     *
+     * @return object
      */
     private function validateObject(mixed $prop, ?string $expectedType): object
     {
@@ -120,22 +130,24 @@ class TypeSafe
         }
 
         if ($expectedType && !$prop instanceof $expectedType) {
-            $this->fail('The field is not an instance of ' . $expectedType);
+            $this->fail('The field is not an instance of '.$expectedType);
         }
 
         return $prop;
     }
 
     /**
-     * @param mixed $prop
+     * @param mixed  $prop
      * @param string $expectedType
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     private function runCheck(mixed $prop, string $expectedType): mixed
     {
-        if (strpos($expectedType , 't_') !== 0) {
+        if (strpos($expectedType, 't_') !== 0) {
             throw new InvalidTypeException($expectedType.' is not a valid type check.');
         }
 
@@ -143,24 +155,26 @@ class TypeSafe
         $type = $exploded[0];
         $specificType = $exploded[1] ?? null;
 
-        return match($type) {
-            Type::CLOSURE => $this->validateClosure($prop),
-            Type::ARRAY => $this->validateArray($prop, $specificType),
+        return match ($type) {
+            Type::CLOSURE     => $this->validateClosure($prop),
+            Type::ARRAY       => $this->validateArray($prop, $specificType),
             Type::ASSOC_ARRAY => $this->validateAssocArray($prop, $specificType),
-            Type::OBJECT => $this->validateObject($prop, $specificType),
-            default => $this->validateField($prop, $expectedType),
+            Type::OBJECT      => $this->validateObject($prop, $specificType),
+            default           => $this->validateField($prop, $expectedType),
         };
     }
 
     /**
      * @param mixed $prop
      * @param Check $expectedType
-     * @return mixed
+     *
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     private function runCustomCheck(mixed $prop, Check $expectedType): mixed
     {
-        if (! $expectedType->passes($prop)) {
+        if (!$expectedType->passes($prop)) {
             $this->fail($expectedType->message($prop));
         }
 
@@ -168,10 +182,12 @@ class TypeSafe
     }
 
     /**
-     * @param mixed $prop
+     * @param mixed  $prop
      * @param string $expectedType
-     * @return mixed
+     *
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     private function validateField(mixed $prop, string $expectedType): mixed
     {
