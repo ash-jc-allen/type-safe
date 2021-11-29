@@ -2,6 +2,7 @@
 
 namespace AshAllenDesign\TypeSafe\Tests\Unit;
 
+use AshAllenDesign\TypeSafe\Exceptions\InvalidTypeException;
 use AshAllenDesign\TypeSafe\Exceptions\TypeSafeException;
 use AshAllenDesign\TypeSafe\Tests\TestCase;
 use AshAllenDesign\TypeSafe\Type;
@@ -53,7 +54,7 @@ class SafeTest extends TestCase
     {
         $prop = [new DummyClass(), new DummyClass(), new DummyClass()];
 
-        $result = safe($prop, Type::arrayOf(DummyClass::class));
+        $result = safe($prop, Type::arrayOf(Type::object(DummyClass::class)));
 
         self::assertSame($prop, $result);
     }
@@ -86,17 +87,17 @@ class SafeTest extends TestCase
     {
         $prop = new DummyClass();
 
-        $result = safe($prop, Type::object(DummyClass::class));
+        $result = safe($prop, Type::OBJECT);
 
         self::assertSame($prop, $result);
     }
 
     /** @test */
-    public function null_can_be_checked(): void
+    public function specific_object_can_be_checked(): void
     {
-        $prop = null;
+        $prop = new DummyClass();
 
-        $result = safe(null, DummyClass::class);
+        $result = safe($prop, Type::object(DummyClass::class));
 
         self::assertSame($prop, $result);
     }
@@ -114,7 +115,8 @@ class SafeTest extends TestCase
     /** @test */
     public function closure_can_be_checked(): void
     {
-        $prop = function () {};
+        $prop = function () {
+        };
 
         $result = safe($prop, Type::CLOSURE);
 
@@ -122,25 +124,66 @@ class SafeTest extends TestCase
     }
 
     /** @test */
+    public function true_boolean_can_be_checked(): void
+    {
+        $prop = true;
+
+        $result = safe($prop, Type::BOOLEAN);
+
+        self::assertSame($prop, $result);
+    }
+
+    /** @test */
+    public function false_boolean_can_be_checked(): void
+    {
+        $prop = false;
+
+        $result = safe($prop, Type::BOOLEAN);
+
+        self::assertSame($prop, $result);
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_the_parameter_is_a_string_but_an_array_was_expected(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not an array');
+
+        safe('a', Type::ARRAY);
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_the_parameter_is_a_string_but_an_assoc_array_was_expected(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not an array');
+
+        safe('a', Type::ASSOC_ARRAY);
+    }
+
+    /** @test */
     public function exception_is_thrown_if_the_parameter_is_a_string_but_an_integer_was_expected(): void
     {
         $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not a integer');
 
         safe('a', Type::INT);
     }
 
     /** @test */
-    public function exception_is_thrown_if_the_parameter_is_null_but_an_object_was_expected(): void
+    public function exception_is_thrown_if_a_closure_was_expected_but_an_object_was_passed(): void
     {
         $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not a closure.');
 
-        safe(null, Type::OBJECT);
+        safe(new DummyClass(), Type::CLOSURE);
     }
 
     /** @test */
     public function exception_is_thrown_if_the_array_is_of_strings_but_integers_were_expected(): void
     {
         $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not a integer');
 
         safe(['1', '2', '3'], Type::arrayOf(Type::INT));
     }
@@ -149,6 +192,7 @@ class SafeTest extends TestCase
     public function exception_is_thrown_if_the_array_is_of_strings_and_integers_but_only_integers_were_expected(): void
     {
         $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not a integer');
 
         safe([1, 2, '3'], Type::arrayOf(Type::INT));
     }
@@ -157,7 +201,46 @@ class SafeTest extends TestCase
     public function exception_is_thrown_if_the_array_passed_is_not_assoc_but_an_assoc_array_was_expected(): void
     {
         $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The array is not associative.');
 
         safe([1, 2, 3], Type::ASSOC_ARRAY);
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_an_assoc_array_of_string_and_int_is_expected_but_string_and_string_is_passed(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not a integer');
+
+        $prop = ['a' => 'hello', 'b' => 'goodbye', 'c' => 'hello'];
+
+        safe($prop, Type::assocArrayOf(Type::STRING, Type::INT));
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_an_object_was_expected_but_a_string_was_passed(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not an object.');
+
+        safe('hello', Type::OBJECT);
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_the_expected_object_is_different_to_the_object_passed(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The field is not an instance of '.DummyClass::class);
+
+        safe(new AnotherClass(), Type::object(DummyClass::class));
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_the_type_check_passed_is_invalid(): void
+    {
+        $this->expectException(InvalidTypeException::class);
+        $this->expectExceptionMessage('INVALID is not a valid type check.');
+
+        safe(1, 'INVALID');
     }
 }

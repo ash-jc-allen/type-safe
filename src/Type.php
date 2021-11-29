@@ -18,6 +18,8 @@ class Type
 
     public const OBJECT = 't_object';
 
+    public const BOOLEAN = 't_boolean';
+
     public static function arrayOf(mixed $valueType): string
     {
         return static::ARRAY.'_'.$valueType;
