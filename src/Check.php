@@ -7,5 +7,4 @@ interface Check
     public function passes(mixed $prop): bool;
 
     public function message(mixed $prop): string;
-
 }
