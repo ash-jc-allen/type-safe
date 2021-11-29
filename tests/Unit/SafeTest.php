@@ -145,6 +145,16 @@ class SafeTest extends TestCase
     }
 
     /** @test */
+    public function custom_check_can_be_used(): void
+    {
+        $prop = 'a';
+
+        $result = safe($prop, (new CustomCheck()));
+
+        self::assertSame($prop, $result);
+    }
+
+    /** @test */
     public function exception_is_thrown_if_the_parameter_is_a_string_but_an_array_was_expected(): void
     {
         $this->expectException(TypeSafeException::class);
@@ -254,5 +264,18 @@ class SafeTest extends TestCase
             1,
             safe(1, Type::STRING),
         );
+
+        TypeSafe::skipChecks(false);
+    }
+
+    /** @test */
+    public function exception_is_thrown_if_a_custom_check_fails(): void
+    {
+        $this->expectException(TypeSafeException::class);
+        $this->expectExceptionMessage('The custom check field is not a string.');
+
+        $prop = 1;
+
+        safe($prop, (new CustomCheck()));
     }
 }

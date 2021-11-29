@@ -14,32 +14,22 @@ class TypeSafe
      * @template T
      *
      * @param T $prop
-     * @param string $expectedType
+     * @param Check|string $expectedType
      * @return T
-     * @throws TypeSafeException
      * @throws InvalidTypeException
+     * @throws TypeSafeException
      */
-    public function safe(mixed $prop, string $expectedType): mixed
+    public function safe(mixed $prop, Check|string $expectedType): mixed
     {
         if (static::$skipChecks) {
             return $prop;
         }
 
-        if (!str_starts_with($expectedType, 't_')) {
-            throw new InvalidTypeException($expectedType.' is not a valid type check.');
+        if ($expectedType instanceof Check) {
+            return $this->runCustomCheck($prop, $expectedType);
         }
 
-        $exploded = explode(':', $expectedType);
-        $type = $exploded[0];
-        $specificType = $exploded[1] ?? null;
-
-        return match($type) {
-            Type::CLOSURE => $this->validateClosure($prop),
-            Type::ARRAY => $this->validateArray($prop, $specificType),
-            Type::ASSOC_ARRAY => $this->validateAssocArray($prop, $specificType),
-            Type::OBJECT => $this->validateObject($prop, $specificType),
-            default => $this->validateField($prop, $expectedType),
-        };
+        return $this->runCheck($prop, $expectedType);
     }
 
     public static function skipChecks(bool $skipChecks = true): void
@@ -131,6 +121,47 @@ class TypeSafe
 
         if ($expectedType && !$prop instanceof $expectedType) {
             $this->fail('The field is not an instance of ' . $expectedType);
+        }
+
+        return $prop;
+    }
+
+    /**
+     * @param mixed $prop
+     * @param string $expectedType
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    private function runCheck(mixed $prop, string $expectedType): mixed
+    {
+        if (!str_starts_with($expectedType, 't_')) {
+            throw new InvalidTypeException($expectedType.' is not a valid type check.');
+        }
+
+        $exploded = explode(':', $expectedType);
+        $type = $exploded[0];
+        $specificType = $exploded[1] ?? null;
+
+        return match($type) {
+            Type::CLOSURE => $this->validateClosure($prop),
+            Type::ARRAY => $this->validateArray($prop, $specificType),
+            Type::ASSOC_ARRAY => $this->validateAssocArray($prop, $specificType),
+            Type::OBJECT => $this->validateObject($prop, $specificType),
+            default => $this->validateField($prop, $expectedType),
+        };
+    }
+
+    /**
+     * @param mixed $prop
+     * @param Check $expectedType
+     * @return mixed
+     * @throws TypeSafeException
+     */
+    private function runCustomCheck(mixed $prop, Check $expectedType): mixed
+    {
+        if (! $expectedType->passes($prop)) {
+            $this->fail($expectedType->message($prop));
         }
 
         return $prop;
