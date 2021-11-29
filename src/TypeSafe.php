@@ -11,15 +11,13 @@ class TypeSafe
     private static bool $skipChecks = false;
 
     /**
-     * @template T
-     *
-     * @param T            $prop
+     * @param mixed        $prop
      * @param Check|string $expectedType
      *
      * @throws InvalidTypeException
      * @throws TypeSafeException
      *
-     * @return T
+     * @return mixed
      */
     public function safe(mixed $prop, Check|string $expectedType): mixed
     {
