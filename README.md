@@ -171,6 +171,32 @@ TypeSafe::skipChecks();
 $validatedField = safe($field, Type::ASSOC_ARRAY);
 ```
 
+### Helpers Methods
+
+There are three different ways that you can use the package to add type safe checks to your code.
+
+The first method is by using the `TypeSafe` object itself like so:
+
+```php
+use AshAllenDesign\TypeSafe\TypeSafe;
+
+$validatedField = (new TypeSafe())->safe($field, Type::INT);
+```
+
+Alternatively, you can use the `safe()` helper function that achieves the same thing as the code above. You can use the helper function like so:
+
+```php
+$validatedField = safe($field, Type::INT);
+```
+
+The `TypeSafe` also includes helper methods that you can use for all the simple checks. The example shows how you can validate an integer field:
+
+```php
+use AshAllenDesign\TypeSafe\TypeSafe;
+
+$validatedField = TypeSafe::int($field);
+```
+
 ## Testing
 
 To run the tests for the package, you can use the following command:

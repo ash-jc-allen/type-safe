@@ -15,7 +15,7 @@ class SafeTest extends TestCase
     {
         $prop = [];
 
-        $result = safe($prop, Type::ARRAY);
+        $result = TypeSafe::array($prop);
 
         self::assertSame($prop, $result);
     }
@@ -25,7 +25,7 @@ class SafeTest extends TestCase
     {
         $prop = ['hello' => 'goodbye'];
 
-        $result = safe($prop, Type::ASSOC_ARRAY);
+        $result = TypeSafe::assocArray($prop);
 
         self::assertSame($prop, $result);
     }
@@ -88,7 +88,7 @@ class SafeTest extends TestCase
     {
         $prop = new DummyClass();
 
-        $result = safe($prop, Type::OBJECT);
+        $result = TypeSafe::object($prop);
 
         self::assertSame($prop, $result);
     }
@@ -98,7 +98,7 @@ class SafeTest extends TestCase
     {
         $prop = new DummyClass();
 
-        $result = safe($prop, Type::object(DummyClass::class));
+        $result = TypeSafe::object($prop);
 
         self::assertSame($prop, $result);
     }
@@ -108,7 +108,7 @@ class SafeTest extends TestCase
     {
         $prop = 'a';
 
-        $result = safe($prop, Type::STRING);
+        $result = TypeSafe::string($prop);
 
         self::assertSame($prop, $result);
     }
@@ -119,7 +119,7 @@ class SafeTest extends TestCase
         $prop = function () {
         };
 
-        $result = safe($prop, Type::CLOSURE);
+        $result = TypeSafe::closure($prop);
 
         self::assertSame($prop, $result);
     }
@@ -129,7 +129,7 @@ class SafeTest extends TestCase
     {
         $prop = true;
 
-        $result = safe($prop, Type::BOOLEAN);
+        $result = TypeSafe::boolean($prop);
 
         self::assertSame($prop, $result);
     }
@@ -139,7 +139,7 @@ class SafeTest extends TestCase
     {
         $prop = false;
 
-        $result = safe($prop, Type::BOOLEAN);
+        $result = TypeSafe::boolean($prop);
 
         self::assertSame($prop, $result);
     }
