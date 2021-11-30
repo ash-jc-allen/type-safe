@@ -1,4 +1,14 @@
-# Type Safe
+<p align="center">
+<img src="/docs/logo.png" alt="PHP Type Safe logo" width="600">
+</p>
+
+<p align="center">
+<a href="https://packagist.org/packages/ashallendesign/type-safe"><img src="https://img.shields.io/packagist/v/ashallendesign/type-safe.svg?style=flat-square" alt="Latest Version on Packagist"></a>
+<a href="https://github.com/ash-jc-allen/type-safe"><img src="https://img.shields.io/github/workflow/status/ash-jc-allen/type-safe/run-tests?style=flat-square" alt="Build Status"></a>
+<a href="https://packagist.org/packages/ashallendesign/type-safe"><img src="https://img.shields.io/packagist/dt/ashallendesign/type-safe.svg?style=flat-square" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/ashallendesign/type-safe"><img src="https://img.shields.io/packagist/php-v/ashallendesign/type-safe?style=flat-square" alt="PHP from Packagist"></a>
+<a href="https://github.com/ash-jc-allen/short-url/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ash-jc-allen/type-safe?style=flat-square" alt="GitHub license"></a>
+</p>
 
 ## Table of Contents
 
