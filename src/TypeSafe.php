@@ -32,6 +32,94 @@ class TypeSafe
         return $this->runCheck($prop, $expectedType);
     }
 
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function string(mixed $prop): mixed
+    {
+        return (new static())->safe($prop, Type::STRING);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function int(mixed $prop): int
+    {
+        return (new static())->safe($prop, Type::INT);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function double(mixed $prop): float
+    {
+        return (new static())->safe($prop, Type::DOUBLE);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function array(mixed $prop): array
+    {
+        return (new static())->safe($prop, Type::ARRAY);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function assocArray(mixed $prop): array
+    {
+        return (new static())->safe($prop, Type::ASSOC_ARRAY);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function closure(mixed $prop): Closure
+    {
+        return (new static())->safe($prop, Type::CLOSURE);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function object(mixed $prop): object
+    {
+        return (new static())->safe($prop, Type::OBJECT);
+    }
+
+    /**
+     * @param mixed $prop
+     * @return mixed
+     * @throws InvalidTypeException
+     * @throws TypeSafeException
+     */
+    public static function boolean(mixed $prop): bool
+    {
+        return (new static())->safe($prop, Type::BOOLEAN);
+    }
+
     public static function skipChecks(bool $skipChecks = true): void
     {
         static::$skipChecks = $skipChecks;
