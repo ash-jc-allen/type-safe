@@ -34,9 +34,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function string(mixed $prop): mixed
     {
@@ -45,9 +47,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function int(mixed $prop): int
     {
@@ -56,9 +60,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function double(mixed $prop): float
     {
@@ -67,9 +73,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function array(mixed $prop): array
     {
@@ -78,9 +86,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function assocArray(mixed $prop): array
     {
@@ -89,9 +99,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function closure(mixed $prop): Closure
     {
@@ -100,9 +112,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function object(mixed $prop): object
     {
@@ -111,9 +125,11 @@ class TypeSafe
 
     /**
      * @param mixed $prop
-     * @return mixed
+     *
      * @throws InvalidTypeException
      * @throws TypeSafeException
+     *
+     * @return mixed
      */
     public static function boolean(mixed $prop): bool
     {
