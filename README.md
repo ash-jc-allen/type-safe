@@ -30,6 +30,8 @@
 
 Type Safe is a lightweight package that you can use in your PHP projects to ensure your variables' types.
 
+If you're interested in reading about why I made this package, [check out this blog post](https://ashallendesign.co.uk/blog/type-safe-package-for-php).
+
 ## Installation
 
 You can install the package via Composer:
