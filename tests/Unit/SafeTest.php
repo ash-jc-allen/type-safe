@@ -260,7 +260,7 @@ class SafeTest extends TestCase
     {
         TypeSafe::skipChecks(true);
 
-        self::assertEquals(
+        self::assertSame(
             1,
             safe(1, Type::STRING),
         );
